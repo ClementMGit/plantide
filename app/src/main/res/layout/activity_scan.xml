@@ -1,36 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center"
-    android:background="@drawable/background_plant"
-    android:padding="16dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/background_plant2">
 
-    <!-- Affichage de l'image capturée -->
-    <ImageView
-        android:id="@+id/imageView"
+    <TextView
+        android:id="@+id/title_scan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/ubuntubold"
+        android:text="@string/identification"
+        android:textAllCaps="false"
+        android:layout_centerHorizontal="true"
+        android:textSize="40sp"
+        android:padding="2dp"
+        android:paddingStart="20sp"
+        android:paddingEnd="20sp"
+
+        android:layout_marginTop="20dp"
+        android:background="@drawable/rounded_corner"
+        android:textColor="@color/text_color1"/>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/circle"
         android:layout_width="300dp"
         android:layout_height="300dp"
-        android:scaleType="centerCrop"
-        android:visibility="gone"
-        android:background="@android:color/darker_gray"/>
+        android:layout_marginTop="20dp"
+        android:layout_below="@+id/title_scan"
+        android:layout_centerHorizontal="true"
+        app:cardCornerRadius="25dp"
+        app:strokeWidth="1dp">
 
-    <!-- Bouton pour capturer une photo -->
-    <Button
-
-        android:id="@+id/captureButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Prendre une photo"
-        android:layout_marginTop="20dp"/>
-
-    <!-- Bouton pour reprendre une autre photo -->
-    <Button
-        android:id="@+id/retakeButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Reprendre la photo"
-        android:visibility="gone"
-        android:layout_marginTop="10dp"/>
-</LinearLayout>
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:scaleType="fitXY"
+            android:layout_centerInParent="true"
+            />
+    </com.google.android.material.card.MaterialCardView>
+</RelativeLayout>

@@ -6,7 +6,7 @@
 
     <!-- Fond vert -->
     <path
-        android:fillColor="#4CAF50"
+        android:fillColor="@color/background_color"
         android:pathData="M0,0h1080v1920h-1080z"/>
 
     <!-- Feuilles en haut -->
