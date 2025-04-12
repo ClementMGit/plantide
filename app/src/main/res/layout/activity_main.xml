@@ -26,8 +26,6 @@
         android:contentDescription="@string/desc_btn"
         android:scaleType="fitCenter"
         android:src="@drawable/add_photo"
-
-
         android:layout_marginTop="20dp"/>
 <com.google.android.material.button.MaterialButton
     android:layout_width="wrap_content"
