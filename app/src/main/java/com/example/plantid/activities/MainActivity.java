@@ -1,4 +1,4 @@
-package com.example.plantid;
+package com.example.plantid.activities;
 
 import android.content.ContentValues;
 import android.content.Intent;
@@ -11,6 +11,13 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.plantid.db.AppDatabase;
+import com.example.plantid.R;
+import com.example.plantid.db.DatabaseBuilder;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,6 +41,12 @@ public class MainActivity extends AppCompatActivity {
 
         ImageButton takePhotoButton = findViewById(R.id.take_photo);
         takePhotoButton.setOnClickListener(v -> openCamera());
+        // Init db
+//        ExecutorService executor = Executors.newSingleThreadExecutor();
+//        executor.execute(() -> {
+//            DatabaseBuilder.buildDatabaseFromCsv(this);
+//        });
+
     }
 
     private void openCamera() {

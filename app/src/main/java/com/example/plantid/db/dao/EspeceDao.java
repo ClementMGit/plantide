@@ -1,0 +1,18 @@
+package com.example.plantid.db.dao;
+
+import androidx.room.Dao;
+import androidx.room.Insert;
+import androidx.room.Query;
+
+import com.example.plantid.db.entities.Espece;
+
+@Dao
+public interface EspeceDao {
+
+    @Insert
+    void insert(Espece espece); // Insère une nouvelle espèce
+
+    @Query("SELECT COUNT(*) FROM espece WHERE nom = :nomEspece")
+    boolean exists(String nomEspece); // Vérifie si une espèce existe dans la base de données
+}
+

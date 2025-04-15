@@ -1,4 +1,4 @@
-package com.example.plantid;
+package com.example.plantid.activities;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -6,6 +6,9 @@ import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.plantid.R;
+import com.example.plantid.db.AppDatabase;
 
 public class ScanActivity extends AppCompatActivity {
 
@@ -24,5 +27,7 @@ public class ScanActivity extends AppCompatActivity {
             Uri photoUri = Uri.parse(uriString);
             imageView.setImageURI(photoUri);
         }
+        AppDatabase db = AppDatabase.getDatabase(this);
+
     }
 }

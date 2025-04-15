@@ -1,11 +1,13 @@
 [versions]
-agp = "8.9.0"
+agp = "8.9.1"
 cameraView = "1.4.2"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 appcompat = "1.7.0"
 material = "1.12.0"
+roomCommonJvm = "2.7.0"
+roomRuntimeAndroid = "2.7.0"
 
 [libraries]
 camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "cameraView" }
@@ -17,6 +19,10 @@ ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitV
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+room-common-jvm = { group = "androidx.room", name = "room-common-jvm", version.ref = "roomCommonJvm" }
+room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomCommonJvm" }
+room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomCommonJvm" }
+room-runtime-android = { group = "androidx.room", name = "room-runtime-android", version.ref = "roomRuntimeAndroid" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
