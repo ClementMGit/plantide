@@ -4,4 +4,5 @@
     <string name="desc_btn">Bouton prendre en photo</string>
     <string name="logo_application">Logo Application</string>
     <string name="identification">Identification</string>
+    <string name="identifier_la_plante">Identifier la plante</string>
 </resources>
