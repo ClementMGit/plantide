@@ -103,8 +103,8 @@ public class ScanActivity extends AppCompatActivity {
         new Thread(() -> {
             try {
                 OkHttpClient client = new OkHttpClient.Builder()
-                        .connectTimeout(20, TimeUnit.SECONDS)
-                        .writeTimeout(20, TimeUnit.SECONDS)
+                        .connectTimeout(10, TimeUnit.SECONDS)
+                        .writeTimeout(40, TimeUnit.SECONDS)
                         .readTimeout(20, TimeUnit.SECONDS)
                         .build();
                 RequestBody imagePart = RequestBody.create(imageFile, MediaType.parse("image/jpeg"));
@@ -156,7 +156,9 @@ public class ScanActivity extends AppCompatActivity {
             } catch (Exception e) {
                 runOnUiThread(() -> {
                             Toast.makeText(this, "Erreur : " + e.getMessage(), Toast.LENGTH_LONG).show();
-                            progressBar.setVisibility(View.GONE);
+                    Log.e("Erreur", e.getMessage());
+
+                    progressBar.setVisibility(View.GONE);
                         }
                 );
             }
