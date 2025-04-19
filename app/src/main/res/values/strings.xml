@@ -5,4 +5,6 @@
     <string name="logo_application">Logo Application</string>
     <string name="identification">Identification</string>
     <string name="identifier_la_plante">Identifier la plante</string>
+    <string name="add_image_btn">Add image btn</string>
+    <string name="ajouter_jusqu_5_photos">Ajouter jusqu\'à 5 photos !</string>
 </resources>

@@ -6,12 +6,15 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import com.example.plantid.R;
 import com.example.plantid.db.AppDatabase;
@@ -26,6 +29,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.HttpUrl;
@@ -42,6 +47,9 @@ public class ScanActivity extends AppCompatActivity {
     private ImageView imageView;
     private MaterialButton identify_btn;
     private ProgressBar progressBar;
+    private int current_photo_index;
+    private CardView ftake_photo_1;
+    private ImageView take_photo1,take_photo2,take_photo3,take_photo4,take_photo5;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,11 +57,20 @@ public class ScanActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         imageView = findViewById(R.id.imageView);
         identify_btn = findViewById(R.id.identify_btn);
+        take_photo1 = findViewById(R.id.take_photo_1);
+//        take_photo2 = findViewById(R.id.take_photo_2);
+//        take_photo3 = findViewById(R.id.take_photo_3);
+//        take_photo4 = findViewById(R.id.take_photo_4);
+//        take_photo5 = findViewById(R.id.take_photo_5);
+//        ftake_photo_1 = findViewById(R.id.cardfdsfdsfs);
+        //ArrayList<ImageButton> btns = new ArrayList<>(Arrays.asList(take_photo1,take_photo2,take_photo3,take_photo4,take_photo5));
+        current_photo_index = 0;
         // Récupérer l'URI de la photo passée depuis l'intent
         String uriString = getIntent().getStringExtra("photoUri");
         if (uriString != null) {
             Uri photoUri = Uri.parse(uriString);
             imageView.setImageURI(photoUri);
+            take_photo1.setImageURI(photoUri);
         }
         AppDatabase db = AppDatabase.getDatabase(this);
         identify_btn.setOnClickListener(view -> {
