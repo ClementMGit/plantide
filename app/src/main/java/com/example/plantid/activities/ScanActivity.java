@@ -1,14 +1,17 @@
 package com.example.plantid.activities;
 
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -19,6 +22,7 @@ import androidx.cardview.widget.CardView;
 import com.example.plantid.R;
 import com.example.plantid.db.AppDatabase;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.card.MaterialCardView;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -48,8 +52,7 @@ public class ScanActivity extends AppCompatActivity {
     private MaterialButton identify_btn;
     private ProgressBar progressBar;
     private int current_photo_index;
-    private CardView ftake_photo_1;
-    private ImageView take_photo1,take_photo2,take_photo3,take_photo4,take_photo5;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,22 +60,34 @@ public class ScanActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         imageView = findViewById(R.id.imageView);
         identify_btn = findViewById(R.id.identify_btn);
-        take_photo1 = findViewById(R.id.take_photo_1);
-//        take_photo2 = findViewById(R.id.take_photo_2);
-//        take_photo3 = findViewById(R.id.take_photo_3);
-//        take_photo4 = findViewById(R.id.take_photo_4);
-//        take_photo5 = findViewById(R.id.take_photo_5);
-//        ftake_photo_1 = findViewById(R.id.cardfdsfdsfs);
-        //ArrayList<ImageButton> btns = new ArrayList<>(Arrays.asList(take_photo1,take_photo2,take_photo3,take_photo4,take_photo5));
+
         current_photo_index = 0;
         // Récupérer l'URI de la photo passée depuis l'intent
         String uriString = getIntent().getStringExtra("photoUri");
+        Uri photoUri = null;
         if (uriString != null) {
-            Uri photoUri = Uri.parse(uriString);
+            photoUri = Uri.parse(uriString);
             imageView.setImageURI(photoUri);
-            take_photo1.setImageURI(photoUri);
         }
-        AppDatabase db = AppDatabase.getDatabase(this);
+        LinearLayout container = findViewById(R.id.take_btns);
+        LayoutInflater inflater = LayoutInflater.from(this);
+
+        for (int i = 0; i < 5; i++) {
+            View itemView = inflater.inflate(R.layout.photo_btn, container, false);
+            MaterialCardView cardView = itemView.findViewById(R.id.photo_cardview);
+
+            ImageView imageView = itemView.findViewById(R.id.photo_image);
+
+            if(i==0){
+                imageView.setImageURI(photoUri);
+                cardView.setStrokeColor(getColor(R.color.white));
+            }
+            imageView.setOnClickListener(v -> {
+                // Exemple simple
+                Toast.makeText(this, "Clicked: " + v.getTag(), Toast.LENGTH_SHORT).show();
+            });
+            container.addView(itemView);
+        }
         identify_btn.setOnClickListener(view -> {
             if (uriString != null) {
                 File imageFile = uriToFile(Uri.parse(uriString));
@@ -85,7 +100,7 @@ public class ScanActivity extends AppCompatActivity {
             }
 
         });
-
+       // AppDatabase db = AppDatabase.getDatabase(this);
     }
     public File uriToFile(Uri uri) {
         File file = null;
