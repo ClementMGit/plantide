@@ -21,6 +21,7 @@ import androidx.cardview.widget.CardView;
 
 import com.example.plantid.R;
 import com.example.plantid.db.AppDatabase;
+import com.example.plantid.utils.ImagePickerHelper;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.gson.JsonArray;
@@ -35,6 +36,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.HttpUrl;
@@ -48,26 +50,31 @@ import okhttp3.Response;
 public class ScanActivity extends AppCompatActivity {
     private final String API_KEY = "2b10UgbpDCukpRYKDarORPFFxu";
 
-    private ImageView imageView;
+    private ImageView big_image_view;
     private MaterialButton identify_btn;
     private ProgressBar progressBar;
     private int current_photo_index;
-
+    private Uri[] uris ;
+    private ImagePickerHelper pickerHelper;
+    private MaterialCardView last_cv;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan);
         progressBar = findViewById(R.id.progressBar);
-        imageView = findViewById(R.id.imageView);
+        big_image_view = findViewById(R.id.big_image_view);
         identify_btn = findViewById(R.id.identify_btn);
-
+        pickerHelper = new ImagePickerHelper(this);
         current_photo_index = 0;
+        uris = new Uri[5];
         // Récupérer l'URI de la photo passée depuis l'intent
         String uriString = getIntent().getStringExtra("photoUri");
         Uri photoUri = null;
         if (uriString != null) {
+            big_image_view.setTag("hihi");
             photoUri = Uri.parse(uriString);
-            imageView.setImageURI(photoUri);
+            big_image_view.setImageURI(photoUri);
+            uris[current_photo_index] = photoUri;
         }
         LinearLayout container = findViewById(R.id.take_btns);
         LayoutInflater inflater = LayoutInflater.from(this);
@@ -77,61 +84,54 @@ public class ScanActivity extends AppCompatActivity {
             MaterialCardView cardView = itemView.findViewById(R.id.photo_cardview);
 
             ImageView imageView = itemView.findViewById(R.id.photo_image);
-
+            imageView.setTag(i);
             if(i==0){
                 imageView.setImageURI(photoUri);
                 cardView.setStrokeColor(getColor(R.color.white));
+                last_cv = cardView;
             }
             imageView.setOnClickListener(v -> {
-                // Exemple simple
-                Toast.makeText(this, "Clicked: " + v.getTag(), Toast.LENGTH_SHORT).show();
+                int index = (int) v.getTag();
+                if(uris[index] == null){
+                    pickerHelper.pickImage(uri -> {
+                        uris[index] = uri;
+                        ((ImageView) v).setImageURI(uri); // met à jour la petite image
+                        big_image_view.setImageURI(uri);
+                    });
+                }else{
+                    big_image_view.setImageURI(uris[index]);
+
+                }
+                last_cv.setStrokeColor(getColor(R.color.black));
+                cardView.setStrokeColor(getColor(R.color.white));
+                last_cv = cardView;
             });
             container.addView(itemView);
         }
         identify_btn.setOnClickListener(view -> {
-            if (uriString != null) {
-                File imageFile = uriToFile(Uri.parse(uriString));
-                if (imageFile != null && imageFile.exists()) {
-                    progressBar.setVisibility(View.VISIBLE);
-                    identifyPlantWithImage(imageFile);
-                } else {
-                    Toast.makeText(this, "Fichier image introuvable", Toast.LENGTH_SHORT).show();
-                }
-            }
+            List<File> imageFiles = new ArrayList<>();
 
-        });
-       // AppDatabase db = AppDatabase.getDatabase(this);
-    }
-    public File uriToFile(Uri uri) {
-        File file = null;
-        try (Cursor cursor = getContentResolver().query(uri, null, null, null, null)) {
-            if (cursor != null && cursor.moveToFirst()) {
-                int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-                if (idx != -1) {
-                    String filePath = cursor.getString(idx);
-                    file = new File(filePath);
-                } else {
-                    // Fallback méthode pour Android Q+
-                    InputStream inputStream = getContentResolver().openInputStream(uri);
-                    File tempFile = File.createTempFile("temp_image", ".jpg", getCacheDir());
-                    FileOutputStream out = new FileOutputStream(tempFile);
-                    byte[] buf = new byte[1024];
-                    int len;
-                    while ((len = inputStream.read(buf)) > 0) {
-                        out.write(buf, 0, len);
+            for (Uri uri : uris) {
+                if (uri != null) {
+                    File imageFile = pickerHelper.uriToFile(uri);
+                    if (imageFile != null && imageFile.exists()) {
+                        imageFiles.add(imageFile);
                     }
-                    out.close();
-                    inputStream.close();
-                    file = tempFile;
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return file;
+            if (!imageFiles.isEmpty()) {
+                progressBar.setVisibility(View.VISIBLE);
+                identifyPlantWithImages(imageFiles);
+            } else {
+                Toast.makeText(this, "Aucune image valide sélectionnée", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // AppDatabase db = AppDatabase.getDatabase(this);
     }
 
-    private void identifyPlantWithImage(File imageFile) {
+
+    private void identifyPlantWithImages(List<File> imageFiles) {
         new Thread(() -> {
             try {
                 OkHttpClient client = new OkHttpClient.Builder()
@@ -139,12 +139,18 @@ public class ScanActivity extends AppCompatActivity {
                         .writeTimeout(40, TimeUnit.SECONDS)
                         .readTimeout(20, TimeUnit.SECONDS)
                         .build();
-                RequestBody imagePart = RequestBody.create(imageFile, MediaType.parse("image/jpeg"));
-                MultipartBody requestBody = new MultipartBody.Builder()
-                        .setType(MultipartBody.FORM)
-                        .addFormDataPart("images", imageFile.getName(), imagePart)
-                        .addFormDataPart("organs", "auto")
-                        .build();
+
+                MultipartBody.Builder multipartBuilder = new MultipartBody.Builder()
+                        .setType(MultipartBody.FORM);
+
+                for (File imageFile : imageFiles) {
+                    RequestBody imagePart = RequestBody.create(imageFile, MediaType.parse("image/jpeg"));
+                    multipartBuilder.addFormDataPart("images", imageFile.getName(), imagePart);
+                    multipartBuilder.addFormDataPart("organs", "auto"); // ← ajouter un organe par image
+                }
+
+
+                MultipartBody requestBody = multipartBuilder.build();
 
                 HttpUrl url = HttpUrl.parse("https://my-api.plantnet.org/v2/identify/all").newBuilder()
                         .addQueryParameter("include-related-images", "false")
@@ -166,36 +172,34 @@ public class ScanActivity extends AppCompatActivity {
                     String jsonData = response.body().string();
                     JsonObject json = JsonParser.parseString(jsonData).getAsJsonObject();
                     JsonArray results = json.getAsJsonArray("results");
+
                     if (results != null && results.size() > 0) {
                         JsonObject firstResult = results.get(0).getAsJsonObject();
                         JsonObject species = firstResult.getAsJsonObject("species");
                         String scientificName = species.get("scientificNameWithoutAuthor").getAsString();
 
-                        runOnUiThread(() ->{
-                                Toast.makeText(this, "Espèce détectée : " + scientificName, Toast.LENGTH_LONG).show();
-                                progressBar.setVisibility(View.GONE);
-                                }
-                        );
+                        runOnUiThread(() -> {
+                            Toast.makeText(this, "Espèce détectée : " + scientificName, Toast.LENGTH_LONG).show();
+                            progressBar.setVisibility(View.GONE);
+                        });
                     }
                 } else {
                     runOnUiThread(() -> {
-                                Toast.makeText(this, "Erreur HTTP : " + response.code(), Toast.LENGTH_LONG).show();
-                                progressBar.setVisibility(View.GONE);
-                            }
-                    );
+                        Toast.makeText(this, "Erreur HTTP : " + response.code(), Toast.LENGTH_LONG).show();
+                        progressBar.setVisibility(View.GONE);
+                    });
                 }
 
             } catch (Exception e) {
                 runOnUiThread(() -> {
-                            Toast.makeText(this, "Erreur : " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "Erreur : " + e.getMessage(), Toast.LENGTH_LONG).show();
                     Log.e("Erreur", e.getMessage());
-
                     progressBar.setVisibility(View.GONE);
-                        }
-                );
+                });
             }
         }).start();
     }
+
 
 
 }
