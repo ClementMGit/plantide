@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Plantid</string>
+    <string name="app_name">Plantide</string>
     <string name="mes_plantes">Mes plantes</string>
     <string name="desc_btn">Bouton prendre en photo</string>
     <string name="logo_application">Logo Application</string>

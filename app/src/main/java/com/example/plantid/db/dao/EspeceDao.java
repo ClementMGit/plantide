@@ -6,8 +6,12 @@ import androidx.room.Query;
 
 import com.example.plantid.db.entities.Espece;
 
+import java.util.List;
+
 @Dao
 public interface EspeceDao {
+    @Query("SELECT * FROM Espece")
+    List<Espece> getAll();
 
     @Insert
     void insert(Espece espece); // Insère une nouvelle espèce

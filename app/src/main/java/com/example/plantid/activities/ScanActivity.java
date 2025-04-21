@@ -1,5 +1,6 @@
 package com.example.plantid.activities;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
@@ -21,6 +22,8 @@ import androidx.cardview.widget.CardView;
 
 import com.example.plantid.R;
 import com.example.plantid.db.AppDatabase;
+import com.example.plantid.db.entities.Espece;
+import com.example.plantid.db.repositories.EspeceRepository;
 import com.example.plantid.utils.ImagePickerHelper;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
@@ -57,10 +60,13 @@ public class ScanActivity extends AppCompatActivity {
     private Uri[] uris ;
     private ImagePickerHelper pickerHelper;
     private MaterialCardView last_cv;
+    private AppDatabase db;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan);
+        db = AppDatabase.getDatabase(this);
+
         progressBar = findViewById(R.id.progressBar);
         big_image_view = findViewById(R.id.big_image_view);
         identify_btn = findViewById(R.id.identify_btn);
@@ -127,7 +133,6 @@ public class ScanActivity extends AppCompatActivity {
             }
         });
 
-        // AppDatabase db = AppDatabase.getDatabase(this);
     }
 
 
@@ -178,10 +183,30 @@ public class ScanActivity extends AppCompatActivity {
                         JsonObject species = firstResult.getAsJsonObject("species");
                         String scientificName = species.get("scientificNameWithoutAuthor").getAsString();
 
-                        runOnUiThread(() -> {
-                            Toast.makeText(this, "Espèce détectée : " + scientificName, Toast.LENGTH_LONG).show();
-                            progressBar.setVisibility(View.GONE);
-                        });
+                        EspeceRepository repo = new EspeceRepository(this);
+                        //Distance de Levenshtein sur le nom de l'espèce
+                        Espece proche = repo.getClosestEspece(scientificName);
+                        if(proche !=null){
+                            runOnUiThread(() -> {
+                                Toast.makeText(this, "Espèce détectée : " + scientificName, Toast.LENGTH_LONG).show();
+                                Toast.makeText(this, "EspèceProche : " + proche.getNom(), Toast.LENGTH_LONG).show();
+                                progressBar.setVisibility(View.GONE);
+
+                            });
+                            //Lancer l'activité détails avec le nom de l'espèce
+                            Intent intent = new Intent(this, DetailsActivity.class);
+                            intent.putExtra("espece", proche.getNom());
+                            startActivity(intent);
+                        }else {
+                            runOnUiThread(() -> {
+                                Toast.makeText(this, "Espèce détectée : " + scientificName, Toast.LENGTH_LONG).show();
+                                Toast.makeText(this, "Aucune information sur cette espèce en base de données", Toast.LENGTH_LONG).show();
+                                progressBar.setVisibility(View.GONE);
+
+                            });
+                        }
+
+
                     }
                 } else {
                     runOnUiThread(() -> {
