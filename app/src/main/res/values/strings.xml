@@ -7,4 +7,9 @@
     <string name="identifier_la_plante">Identifier la plante</string>
     <string name="add_image_btn">Add image btn</string>
     <string name="ajouter_jusqu_5_photos">Ajouter jusqu\'à 5 photos !</string>
+    <string name="services">Services</string>
+    <string name="slider_service">Slider service</string>
+    <string name="mes_notes_personelles">Mes notes personelles</string>
+    <string name="notes_placeholder">Trouvée en bord de route</string>
+    <string name="sauvegarder">Sauvegarder</string>
 </resources>

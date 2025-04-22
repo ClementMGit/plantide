@@ -38,5 +38,15 @@ public class ProposeService {
         this.qualite = qualite;
         this.confiance = confiance;
     }
+    public float getConfiance() {
+        return confiance;
+    }
+
+    public float getQualite() {
+        return qualite;
+    }
+    public String getService() {
+        return nomService;
+    }
 }
 

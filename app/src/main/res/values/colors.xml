@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="background_color">#66BA6C</color>
     <color name="text_color1">#081C10</color>
+    <color name="slider_color">#2E8ADB</color>
 </resources>

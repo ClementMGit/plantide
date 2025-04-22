@@ -188,14 +188,22 @@ public class ScanActivity extends AppCompatActivity {
                         Espece proche = repo.getClosestEspece(scientificName);
                         if(proche !=null){
                             runOnUiThread(() -> {
-                                Toast.makeText(this, "Espèce détectée : " + scientificName, Toast.LENGTH_LONG).show();
-                                Toast.makeText(this, "EspèceProche : " + proche.getNom(), Toast.LENGTH_LONG).show();
+                                //Toast.makeText(this, "Espèce détectée : " + scientificName, Toast.LENGTH_LONG).show();
+                                //Toast.makeText(this, "EspèceProche : " + proche.getNom(), Toast.LENGTH_LONG).show();
                                 progressBar.setVisibility(View.GONE);
 
                             });
                             //Lancer l'activité détails avec le nom de l'espèce
                             Intent intent = new Intent(this, DetailsActivity.class);
                             intent.putExtra("espece", proche.getNom());
+                            ArrayList<String> urisAsStringList = new ArrayList<>();
+                            for (Uri uri : uris) {
+                                if(uri !=null){
+                                    urisAsStringList.add(uri.toString()); // Conversion en String
+
+                                }
+                            }
+                            intent.putStringArrayListExtra("imageUris", urisAsStringList);
                             startActivity(intent);
                         }else {
                             runOnUiThread(() -> {
