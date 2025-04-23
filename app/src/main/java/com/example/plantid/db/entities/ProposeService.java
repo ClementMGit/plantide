@@ -45,7 +45,7 @@ public class ProposeService {
     public float getQualite() {
         return qualite;
     }
-    public String getService() {
+    public String getNomService() {
         return nomService;
     }
 }

@@ -1,13 +1,18 @@
 package com.example.plantid.activities;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageButton;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.plantid.R;
+import com.example.plantid.db.DatabaseBuilder;
+import com.example.plantid.db.entities.Identification;
 import com.example.plantid.utils.ImagePickerHelper;
+
+import java.io.File;
 
 public class MainActivity extends AppCompatActivity {
     @Override
@@ -19,5 +24,8 @@ public class MainActivity extends AppCompatActivity {
         takePhotoButton.setOnClickListener(v -> {
             helper.pickImage(null);
         });
+
+
+
     }
 }

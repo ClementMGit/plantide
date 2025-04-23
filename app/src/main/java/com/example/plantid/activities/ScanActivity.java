@@ -23,6 +23,9 @@ import androidx.cardview.widget.CardView;
 import com.example.plantid.R;
 import com.example.plantid.db.AppDatabase;
 import com.example.plantid.db.entities.Espece;
+import com.example.plantid.db.entities.Identification;
+import com.example.plantid.db.entities.IdentificationService;
+import com.example.plantid.db.entities.IdentificationWithServices;
 import com.example.plantid.db.repositories.EspeceRepository;
 import com.example.plantid.utils.ImagePickerHelper;
 import com.google.android.material.button.MaterialButton;
@@ -40,6 +43,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.HttpUrl;
@@ -132,7 +136,19 @@ public class ScanActivity extends AppCompatActivity {
                 Toast.makeText(this, "Aucune image valide sélectionnée", Toast.LENGTH_SHORT).show();
             }
         });
-
+        //test code
+//        new Thread(() -> {
+//            for (int i = 1; i <7; i++) {
+//                IdentificationWithServices iws = db.identificationDao().getWithServices(i); // par exemple l’id 1
+//
+//                Log.d("TEST", "Date: " + iws.identification.date);
+//                Log.d("TEST", "Notes: " + iws.identification.notesPersonnelles);
+//                for (IdentificationService service : iws.services) {
+//                    Log.d("TEST", "Service: " + service.nomService + ", Qualité: " + service.qualite);
+//                }
+//            }
+//
+//        }).start();
     }
 
 
@@ -174,11 +190,12 @@ public class ScanActivity extends AppCompatActivity {
                 Response response = client.newCall(request).execute();
 
                 if (response.isSuccessful()) {
+                    assert response.body() != null;
                     String jsonData = response.body().string();
                     JsonObject json = JsonParser.parseString(jsonData).getAsJsonObject();
                     JsonArray results = json.getAsJsonArray("results");
 
-                    if (results != null && results.size() > 0) {
+                    if (results != null && !results.isEmpty()) {
                         JsonObject firstResult = results.get(0).getAsJsonObject();
                         JsonObject species = firstResult.getAsJsonObject("species");
                         String scientificName = species.get("scientificNameWithoutAuthor").getAsString();
@@ -226,7 +243,7 @@ public class ScanActivity extends AppCompatActivity {
             } catch (Exception e) {
                 runOnUiThread(() -> {
                     Toast.makeText(this, "Erreur : " + e.getMessage(), Toast.LENGTH_LONG).show();
-                    Log.e("Erreur", e.getMessage());
+                    Log.e("Erreur", Objects.requireNonNull(e.getMessage()));
                     progressBar.setVisibility(View.GONE);
                 });
             }

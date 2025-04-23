@@ -1,29 +1,28 @@
 package com.example.plantid.db.entities;
 
+import android.net.Uri;
+
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 import androidx.room.Index;
+import androidx.room.TypeConverters;
 
-@Entity(
-        foreignKeys = {
-                @ForeignKey(
-                        entity = ProposeService.class,
-                        parentColumns = {"nomEspece", "nomService"},
-                        childColumns = {"nomEspece", "nomService"},
-                        onDelete = ForeignKey.CASCADE
-                )
-        },
-        indices = {@Index(value = {"nomEspece", "nomService"})}
-)
+import com.example.plantid.utils.UriListConverter;
+
+import java.util.List;
+
+@Entity
 public class Identification {
     @PrimaryKey(autoGenerate = true)
     public long id;
 
-    public String date; // ou LocalDate si tu ajoutes un TypeConverter
+    public String date;
     public String notesPersonnelles;
 
-    public String nomEspece;
-    public String nomService;
+    @TypeConverters(UriListConverter.class)
+    public List<Uri> imageUris;
 }
+
+
 
