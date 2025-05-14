@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.plantid.R;
+import com.example.plantid.db.AppDatabase;
 import com.example.plantid.db.DatabaseBuilder;
 import com.example.plantid.db.entities.Identification;
 import com.example.plantid.utils.ImagePickerHelper;
@@ -32,7 +33,13 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, HistoryActivity.class);
             startActivity(intent);
         });
-
+//
+//        new Thread(() -> {
+//            AppDatabase db = AppDatabase.getDatabase(MainActivity.this);
+//            db.identificationDao().deleteAll();
+//            db.identificationDao().deleteAllIdService();
+//
+//        }).start();
 
     }
 }

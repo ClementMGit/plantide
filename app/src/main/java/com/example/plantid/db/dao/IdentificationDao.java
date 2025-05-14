@@ -38,9 +38,14 @@ public interface IdentificationDao {
     // Supprimer une identification
     @Delete
     void delete(Identification identification);
+    @Query("DELETE FROM identification")
+    void deleteAll();
+    @Query("DELETE FROM IdentificationService")
+    void deleteAllIdService();
 
     @Transaction
     @Query("SELECT * FROM Identification")
     LiveData<List<IdentificationWithServices>> getAllIdentificationsWithServices();
+
 }
 

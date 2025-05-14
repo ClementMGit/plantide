@@ -60,6 +60,28 @@ public class ImagePickerHelper {
                     }
                 });
     }
+    public File copyToPersistentStorage(Uri uri) {
+        File picturesDir = new File(activity.getExternalFilesDir(null), "PlantID");
+        if (!picturesDir.exists()) {
+            picturesDir.mkdirs(); // créer le dossier si inexistant
+        }
+
+        String fileName = "plant_" + System.currentTimeMillis() + ".jpg";
+        File destFile = new File(picturesDir, fileName);
+
+        try (InputStream inputStream = activity.getContentResolver().openInputStream(uri);
+             FileOutputStream out = new FileOutputStream(destFile)) {
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = inputStream.read(buf)) > 0) {
+                out.write(buf, 0, len);
+            }
+            return destFile;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
    public void pickImage(Consumer<Uri> onImagePicked){
        this.onImagePicked = onImagePicked;
@@ -110,31 +132,7 @@ public class ImagePickerHelper {
         }
     }
     public File uriToFile(Uri uri) {
-        File file = null;
-        try (Cursor cursor = activity.getContentResolver().query(uri, null, null, null, null)) {
-            if (cursor != null && cursor.moveToFirst()) {
-                int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-                if (idx != -1) {
-                    String filePath = cursor.getString(idx);
-                    file = new File(filePath);
-                } else {
-                    // Fallback méthode pour Android Q+
-                    InputStream inputStream = activity.getContentResolver().openInputStream(uri);
-                    File tempFile = File.createTempFile("temp_image", ".jpg", activity.getCacheDir());
-                    FileOutputStream out = new FileOutputStream(tempFile);
-                    byte[] buf = new byte[1024];
-                    int len;
-                    while ((len = inputStream.read(buf)) > 0) {
-                        out.write(buf, 0, len);
-                    }
-                    out.close();
-                    inputStream.close();
-                    file = tempFile;
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return file;
+        return copyToPersistentStorage(uri);
     }
+
 }
