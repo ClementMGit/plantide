@@ -1,9 +1,13 @@
 package com.example.plantid.activities;
 
+import android.graphics.Rect;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
 import android.widget.Spinner;
 
@@ -43,10 +47,11 @@ public class HistoryActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerViewIdentifications);
         searchView = findViewById(R.id.searchView);
         spinnerTri = findViewById(R.id.spinnerTri);
+        searchView.setQueryHint("Rechercher");
 
         adapter = new IdentificationAdapter(displayedItems,
                 item -> {}, // onClick si besoin
-                this::onDeleteClick);
+                this::onDeleteClick,this);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);

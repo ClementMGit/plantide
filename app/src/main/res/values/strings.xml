@@ -13,4 +13,8 @@
     <string name="notes_placeholder">Trouvée en bord de route</string>
     <string name="sauvegarder">Sauvegarder</string>
     <string name="trier">Trier par</string>
+    <string name="supprimer">Supprimer</string>
+    <string name="nom_de_la_plante">Nom de la plante</string>
+    <string name="notes_personnelles">Notes personnelles</string>
+    <string name="_15_f_vrier_2023">15 février 2023</string>
 </resources>

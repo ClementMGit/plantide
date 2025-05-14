@@ -48,7 +48,10 @@ public class DetailsActivity extends Activity {
         TextView espece = findViewById(R.id.espece_name);
         saveButton = findViewById(R.id.save_btn);
         notesEditText = findViewById(R.id.notes); // Assurez-vous que "notes" est bien l'id de l'EditText
-
+        String notes_extra = getIntent().getStringExtra("notes");
+        if(notes_extra!=null){
+            notesEditText.setText(notes_extra);
+        }
         nomEspece = getIntent().getStringExtra("espece");
         espece.setText(nomEspece);
 
