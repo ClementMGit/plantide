@@ -75,7 +75,7 @@ public class HistoryActivity extends AppCompatActivity {
         // Créer un tableau avec les 4 options
         ArrayAdapter<String> triAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_item, new String[]{
-                "Nom (A - Z)", "Nom (Z - A)", "Plus récent", "Plus ancien"
+                "Nom (A - Z)", "Nom (Z - A)", "Date (Plus récent)", "Date (Plus ancien)"
         });
         triAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerTri.setAdapter(triAdapter);

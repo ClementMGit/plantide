@@ -65,6 +65,7 @@ public class ScanActivity extends AppCompatActivity {
     private ImagePickerHelper pickerHelper;
     private MaterialCardView last_cv;
     private AppDatabase db;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +78,7 @@ public class ScanActivity extends AppCompatActivity {
         pickerHelper = new ImagePickerHelper(this);
         current_photo_index = 0;
         uris = new Uri[5];
+
         // Récupérer l'URI de la photo passée depuis l'intent
         String uriString = getIntent().getStringExtra("photoUri");
         Uri photoUri = null;
@@ -86,31 +88,30 @@ public class ScanActivity extends AppCompatActivity {
             big_image_view.setImageURI(photoUri);
             uris[current_photo_index] = photoUri;
         }
+
         LinearLayout container = findViewById(R.id.take_btns);
         LayoutInflater inflater = LayoutInflater.from(this);
 
         for (int i = 0; i < 5; i++) {
             View itemView = inflater.inflate(R.layout.photo_btn, container, false);
             MaterialCardView cardView = itemView.findViewById(R.id.photo_cardview);
-
             ImageView imageView = itemView.findViewById(R.id.photo_image);
             imageView.setTag(i);
-            if(i==0){
+            if(i == 0) {
                 imageView.setImageURI(photoUri);
                 cardView.setStrokeColor(getColor(R.color.white));
                 last_cv = cardView;
             }
             imageView.setOnClickListener(v -> {
                 int index = (int) v.getTag();
-                if(uris[index] == null){
+                if(uris[index] == null) {
                     pickerHelper.pickImage(uri -> {
                         uris[index] = uri;
                         ((ImageView) v).setImageURI(uri); // met à jour la petite image
                         big_image_view.setImageURI(uri);
                     });
-                }else{
+                } else {
                     big_image_view.setImageURI(uris[index]);
-
                 }
                 last_cv.setStrokeColor(getColor(R.color.black));
                 cardView.setStrokeColor(getColor(R.color.white));
@@ -118,9 +119,9 @@ public class ScanActivity extends AppCompatActivity {
             });
             container.addView(itemView);
         }
+
         identify_btn.setOnClickListener(view -> {
             List<File> imageFiles = new ArrayList<>();
-
             for (Uri uri : uris) {
                 if (uri != null) {
                     File imageFile = pickerHelper.uriToFile(uri);
@@ -129,6 +130,7 @@ public class ScanActivity extends AppCompatActivity {
                     }
                 }
             }
+
             if (!imageFiles.isEmpty()) {
                 progressBar.setVisibility(View.VISIBLE);
                 identifyPlantWithImages(imageFiles);
@@ -136,21 +138,7 @@ public class ScanActivity extends AppCompatActivity {
                 Toast.makeText(this, "Aucune image valide sélectionnée", Toast.LENGTH_SHORT).show();
             }
         });
-        //test code
-//        new Thread(() -> {
-//            for (int i = 1; i <7; i++) {
-//                IdentificationWithServices iws = db.identificationDao().getWithServices(i); // par exemple l’id 1
-//
-//                Log.d("TEST", "Date: " + iws.identification.date);
-//                Log.d("TEST", "Notes: " + iws.identification.notesPersonnelles);
-//                for (IdentificationService service : iws.services) {
-//                    Log.d("TEST", "Service: " + service.nomService + ", Qualité: " + service.qualite);
-//                }
-//            }
-//
-//        }).start();
     }
-
 
     private void identifyPlantWithImages(List<File> imageFiles) {
         new Thread(() -> {
@@ -167,9 +155,8 @@ public class ScanActivity extends AppCompatActivity {
                 for (File imageFile : imageFiles) {
                     RequestBody imagePart = RequestBody.create(imageFile, MediaType.parse("image/jpeg"));
                     multipartBuilder.addFormDataPart("images", imageFile.getName(), imagePart);
-                    multipartBuilder.addFormDataPart("organs", "auto"); // ← ajouter un organe par image
+                    multipartBuilder.addFormDataPart("organs", "auto");
                 }
-
 
                 MultipartBody requestBody = multipartBuilder.build();
 
@@ -201,37 +188,28 @@ public class ScanActivity extends AppCompatActivity {
                         String scientificName = species.get("scientificNameWithoutAuthor").getAsString();
 
                         EspeceRepository repo = new EspeceRepository(this);
-                        //Distance de Levenshtein sur le nom de l'espèce
                         Espece proche = repo.getClosestEspece(scientificName);
-                        if(proche !=null){
+                        if (proche != null) {
                             runOnUiThread(() -> {
-                                //Toast.makeText(this, "Espèce détectée : " + scientificName, Toast.LENGTH_LONG).show();
-                                //Toast.makeText(this, "EspèceProche : " + proche.getNom(), Toast.LENGTH_LONG).show();
                                 progressBar.setVisibility(View.GONE);
-
                             });
-                            //Lancer l'activité détails avec le nom de l'espèce
                             Intent intent = new Intent(this, DetailsActivity.class);
                             intent.putExtra("espece", proche.getNom());
                             ArrayList<String> urisAsStringList = new ArrayList<>();
                             for (Uri uri : uris) {
-                                if(uri !=null){
-                                    urisAsStringList.add(uri.toString()); // Conversion en String
-
+                                if (uri != null) {
+                                    urisAsStringList.add(uri.toString());
                                 }
                             }
                             intent.putStringArrayListExtra("imageUris", urisAsStringList);
                             startActivity(intent);
-                        }else {
+                        } else {
                             runOnUiThread(() -> {
                                 Toast.makeText(this, "Espèce détectée : " + scientificName, Toast.LENGTH_LONG).show();
                                 Toast.makeText(this, "Aucune information sur cette espèce en base de données", Toast.LENGTH_LONG).show();
                                 progressBar.setVisibility(View.GONE);
-
                             });
                         }
-
-
                     }
                 } else {
                     runOnUiThread(() -> {
@@ -249,8 +227,4 @@ public class ScanActivity extends AppCompatActivity {
             }
         }).start();
     }
-
-
-
 }
-

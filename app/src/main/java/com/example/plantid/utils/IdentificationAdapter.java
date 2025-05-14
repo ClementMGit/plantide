@@ -62,9 +62,7 @@ public class IdentificationAdapter extends RecyclerView.Adapter<IdentificationAd
         holder.date.setText(date);
 
         if (item.identification.imageUris != null && !item.identification.imageUris.isEmpty()) {
-            System.out.println(item.identification.imageUris.get(0));
             Uri imageUri = item.identification.imageUris.get(0);
-
             holder.image.setImageURI(imageUri);
         } else {
             holder.image.setImageResource(R.drawable.ic_launcher_foreground); // Image par défaut

@@ -12,5 +12,5 @@
     <string name="mes_notes_personelles">Mes notes personelles</string>
     <string name="notes_placeholder">Trouvée en bord de route</string>
     <string name="sauvegarder">Sauvegarder</string>
-    <string name="trier">Trier</string>
+    <string name="trier">Trier par</string>
 </resources>

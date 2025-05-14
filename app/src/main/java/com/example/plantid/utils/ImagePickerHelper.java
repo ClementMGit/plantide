@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 
@@ -27,7 +28,8 @@ public class ImagePickerHelper {
     private Consumer<Uri> onImagePicked;
     private AppCompatActivity activity;
     private Uri photoUri;
-    private  ActivityResultLauncher<Intent> takePictureLauncher;
+    private ActivityResultLauncher<Intent> takePictureLauncher;
+
     public ImagePickerHelper(AppCompatActivity activity) {
         this.activity = activity;
         this.takePictureLauncher = activity.registerForActivityResult(
@@ -44,50 +46,36 @@ public class ImagePickerHelper {
                             // Cas de la galerie
                             imageUri = data.getData();
                         }
-                        if(activity instanceof  ScanActivity){
-                            if (onImagePicked != null) {
-                                onImagePicked.accept(imageUri); // Exécuter le callback
-                                onImagePicked = null; // On reset après usage
+
+                        // Enregistrer l'image dans un répertoire accessible
+                        File savedFile = saveImageToPictures(imageUri);
+
+                        if (savedFile != null) {
+                            Uri savedUri = Uri.fromFile(savedFile);
+                            if (activity instanceof ScanActivity) {
+                                if (onImagePicked != null) {
+                                    onImagePicked.accept(savedUri); // Exécuter le callback
+                                    onImagePicked = null; // On reset après usage
+                                }
+                            } else {
+                                // Passer l'URI de l'image à ScanActivity
+                                Intent intent = new Intent(activity, ScanActivity.class);
+                                intent.putExtra("photoUri", savedUri.toString());
+                                activity.startActivity(intent);
                             }
-                        }else{
-                            // Passer l'URI de l'image à ScanActivity
-                            Intent intent = new Intent(activity, ScanActivity.class);
-                            intent.putExtra("photoUri", imageUri.toString());
-                            activity.startActivity(intent);
+                        } else {
+                            Log.e("ImagePicker", "Failed to save image.");
                         }
-
-
                     }
                 });
     }
-    public File copyToPersistentStorage(Uri uri) {
-        File picturesDir = new File(activity.getExternalFilesDir(null), "PlantID");
-        if (!picturesDir.exists()) {
-            picturesDir.mkdirs(); // créer le dossier si inexistant
-        }
 
-        String fileName = "plant_" + System.currentTimeMillis() + ".jpg";
-        File destFile = new File(picturesDir, fileName);
-
-        try (InputStream inputStream = activity.getContentResolver().openInputStream(uri);
-             FileOutputStream out = new FileOutputStream(destFile)) {
-            byte[] buf = new byte[1024];
-            int len;
-            while ((len = inputStream.read(buf)) > 0) {
-                out.write(buf, 0, len);
-            }
-            return destFile;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+    public void pickImage(Consumer<Uri> onImagePicked) {
+        this.onImagePicked = onImagePicked;
+        checkPermissions();
+        openImageChooser();
     }
 
-   public void pickImage(Consumer<Uri> onImagePicked){
-       this.onImagePicked = onImagePicked;
-       checkPermissions();
-       openImageChooser();
-    }
     public void openImageChooser() {
         // Intent galerie
         Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -132,7 +120,75 @@ public class ImagePickerHelper {
         }
     }
     public File uriToFile(Uri uri) {
-        return copyToPersistentStorage(uri);
+        File file = null;
+        InputStream inputStream = null;
+        FileOutputStream outputStream = null;
+
+        try {
+            // Si l'URI provient de la galerie ou de l'appareil photo
+            inputStream = activity.getContentResolver().openInputStream(uri);
+
+            // Créer un fichier dans le répertoire Pictures
+            File pictureFile = new File(activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "image_" + System.currentTimeMillis() + ".jpg");
+            outputStream = new FileOutputStream(pictureFile);
+
+            // Lire les données de l'URI et les écrire dans le fichier
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, length);
+            }
+
+            outputStream.flush();
+            file = pictureFile;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+                if (outputStream != null) {
+                    outputStream.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return file;
     }
 
+    // Enregistrer l'image dans le répertoire Pictures
+    public File saveImageToPictures(Uri imageUri) {
+        File outputFile = null;
+        try {
+            // Créer un fichier dans le répertoire public "Pictures"
+            File picturesDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+            if (!picturesDir.exists()) {
+                picturesDir.mkdirs();
+            }
+
+            // Crée un fichier avec un nom unique
+            outputFile = new File(picturesDir, "IMG_" + System.currentTimeMillis() + ".jpg");
+
+            // Copier le contenu de l'image vers le fichier
+            InputStream inputStream = activity.getContentResolver().openInputStream(imageUri);
+            FileOutputStream outputStream = new FileOutputStream(outputFile);
+            byte[] buffer = new byte[1024];
+            int len;
+            while ((len = inputStream.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, len);
+            }
+
+            outputStream.flush();
+            outputStream.close();
+            inputStream.close();
+
+        } catch (IOException e) {
+            Log.e("ImagePicker", "Error saving image: " + e.getMessage());
+        }
+
+        return outputFile;
+    }
 }
