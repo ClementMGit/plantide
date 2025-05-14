@@ -1,5 +1,6 @@
 package com.example.plantid.db.dao;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -37,5 +38,9 @@ public interface IdentificationDao {
     // Supprimer une identification
     @Delete
     void delete(Identification identification);
+
+    @Transaction
+    @Query("SELECT * FROM Identification")
+    LiveData<List<IdentificationWithServices>> getAllIdentificationsWithServices();
 }
 

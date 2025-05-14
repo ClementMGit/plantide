@@ -2,6 +2,7 @@
 agp = "8.9.1"
 cameraView = "1.4.2"
 commonsText = "1.10.0"
+compiler = "4.15.1"
 converterGson = "2.9.0"
 gson = "2.10.1"
 junit = "4.13.2"
@@ -20,7 +21,9 @@ camera-core = { module = "androidx.camera:camera-core", version.ref = "cameraVie
 camera-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "cameraView" }
 camera-view = { module = "androidx.camera:camera-view", version.ref = "cameraView" }
 commons-text = { module = "org.apache.commons:commons-text", version.ref = "commonsText" }
+compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "compiler" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
+glide = { module = "com.github.bumptech.glide:glide", version.ref = "compiler" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }

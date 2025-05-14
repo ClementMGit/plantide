@@ -1,6 +1,7 @@
 package com.example.plantid.activities;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -115,7 +116,8 @@ public class DetailsActivity extends Activity {
                 runOnUiThread(() -> {
                     // Afficher un message ou effectuer une action après la sauvegarde
                     Toast.makeText(this, "Identification saved successfully!", Toast.LENGTH_SHORT).show();
-                    finish(); // Fermer l'activité après la sauvegarde
+                    Intent intent = new Intent(DetailsActivity.this, HistoryActivity.class);
+                    startActivity(intent);
                 });
             }).start();
         });

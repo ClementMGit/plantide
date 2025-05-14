@@ -1,7 +1,9 @@
 package com.example.plantid.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.ImageButton;
 
 import androidx.annotation.Nullable;
@@ -25,6 +27,11 @@ public class MainActivity extends AppCompatActivity {
             helper.pickImage(null);
         });
 
+        Button myPlantsButton = findViewById(R.id.myPlantsBtn);
+        myPlantsButton.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, HistoryActivity.class);
+            startActivity(intent);
+        });
 
 
     }
