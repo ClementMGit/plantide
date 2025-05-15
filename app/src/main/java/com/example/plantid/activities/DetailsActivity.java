@@ -38,6 +38,7 @@ public class DetailsActivity extends Activity {
     private String nomEspece;
     private List<Uri> uris;
     private List<ProposeService> services;
+    private Long identificationId = null;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,6 +53,8 @@ public class DetailsActivity extends Activity {
         if(notes_extra!=null){
             notesEditText.setText(notes_extra);
         }
+        identificationId = getIntent().hasExtra("identificationId") ?
+                getIntent().getLongExtra("identificationId", -1) : null;
         nomEspece = getIntent().getStringExtra("espece");
         espece.setText(nomEspece);
 
@@ -93,37 +96,43 @@ public class DetailsActivity extends Activity {
 
         // Ajouter un OnClickListener sur le bouton de sauvegarde
         saveButton.setOnClickListener(view -> {
-            // Créer un objet Identification
             String notes = notesEditText.getText().toString();
-            Identification identification = new Identification();
-            identification.date = getCurrentDate();  // Par exemple, récupère la date actuelle
-            identification.notesPersonnelles = notes;
-            identification.imageUris = uris;
 
-            // Sauvegarder l'Identification dans la base de données
             new Thread(() -> {
-                // Enregistrer l'Identification dans la base de données
-                long identificationId = db.identificationDao().insert(identification);
+                if (identificationId != null && identificationId != -1) {
+                    // Cas : mise à jour d'une identification existante
+                    Identification existing = db.identificationDao().getById(identificationId);
+                    if (existing != null) {
+                        existing.notesPersonnelles = notes;
+                        db.identificationDao().update(existing);
+                    }
+                } else {
+                    // Cas : nouvelle identification
+                    Identification identification = new Identification();
+                    identification.date = getCurrentDate();
+                    identification.notesPersonnelles = notes;
+                    identification.imageUris = uris;
 
-                // Lier cette identification aux services proposés (enregistrer dans IdentificationService)
-                for (ProposeService service : services) {
-                    IdentificationService identificationService = new IdentificationService();
-                    identificationService.identificationId = identificationId; // Associer l'ID de l'Identification
-                    identificationService.nomEspece = nomEspece;
-                    identificationService.nomService = service.getNomService();
-                    identificationService.qualite = service.getQualite();
+                    long newId = db.identificationDao().insert(identification);
 
-                    db.identificationServiceDao().insert(identificationService); // Enregistrer dans la table d'association
+                    for (ProposeService service : services) {
+                        IdentificationService identificationService = new IdentificationService();
+                        identificationService.identificationId = newId;
+                        identificationService.nomEspece = nomEspece;
+                        identificationService.nomService = service.getNomService();
+                        identificationService.qualite = service.getQualite();
+
+                        db.identificationServiceDao().insert(identificationService);
+                    }
                 }
 
                 runOnUiThread(() -> {
-                    // Afficher un message ou effectuer une action après la sauvegarde
-                    Toast.makeText(this, "Identification saved successfully!", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(DetailsActivity.this, HistoryActivity.class);
-                    startActivity(intent);
+                    Toast.makeText(this, "Identification enregistrée avec succès !", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(DetailsActivity.this, HistoryActivity.class));
                 });
             }).start();
         });
+
     }
 
     // Méthode pour récupérer la date actuelle, à adapter selon tes besoins

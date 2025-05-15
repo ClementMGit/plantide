@@ -85,7 +85,7 @@ public class IdentificationAdapter extends RecyclerView.Adapter<IdentificationAd
             // Passer les données nécessaires via l'Intent
             intent.putExtra("espece", nomEspece);
             intent.putExtra("notes", item.identification.notesPersonnelles);
-
+            intent.putExtra("identificationId", item.identification.id);
             // Convertir les URIs en ArrayList<String> pour les envoyer
             ArrayList<String> uriStrings = new ArrayList<>();
             for (Uri uri : item.identification.imageUris) {
