@@ -2,6 +2,7 @@ package com.example.plantid.activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -77,17 +78,39 @@ public class DetailsActivity extends Activity {
         // Récupération des services associés à l'espèce
         new Thread(() -> {
             services = db.proposeServiceDao().getByEspece(nomEspece);
-
             runOnUiThread(() -> {
                 for (ProposeService ps : services) {
                     // "Gonfler" le layout d'un slider
                     View itemView = inflater.inflate(R.layout.slider, container, false);
                     Slider slider = itemView.findViewById(R.id.slider);
-                    slider.setValue(ps.getQualite());
-
                     TextView label = itemView.findViewById(R.id.slider_label);
-                    label.setText(ps.getNomService());
+                    TextView valueText = itemView.findViewById(R.id.slider_value);
+                    String service = ps.getNomService();
+                    //amélioration possible, mettre les textes francais en bd
+                    String serviceTxt = "";
+                    if(service.equals("nitrogen_provision")){
+                        serviceTxt = "Fixation de l'azote";
+                    }else if(service.equals("soil_structuration")){
+                        serviceTxt = "Amélioration de la structure du sol";
+                    }else if(service.equals("storage_and_return_water")){
+                        serviceTxt = "Capacité à retenir l'eau dans le sol";
+                    }
+                    label.setText(serviceTxt);
+                    float qualite = ps.getQualite();
+                    slider.setValue(qualite);
+                    System.out.println(qualite);
+                    int couleur;
 
+                    if (qualite <= 0.25) {
+                        couleur = getResources().getColor(R.color.slider_colorlow);
+                    } else if (qualite >= 0.75) {
+                        couleur = getResources().getColor(R.color.slider_colormhigh);
+                    } else {
+                        couleur = getResources().getColor(R.color.slider_colormid);
+                    }
+
+                    slider.setThumbTintList(ColorStateList.valueOf(couleur)); // Change la couleur principale du thumb
+                    valueText.setText(String.format(Locale.getDefault(), "%.2f", qualite));
                     // Ajouter la vue au container
                     container.addView(itemView);
                 }

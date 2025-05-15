@@ -1,87 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/background_plant3"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_plant3">
 
-    <TextView
-        android:id="@+id/espece_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/ubuntubold"
-        android:text="@string/identification"
-        android:textAllCaps="false"
-        android:layout_centerHorizontal="true"
-        android:textSize="40sp"
-        android:textAlignment="center"
-        android:padding="2dp"
-        android:paddingStart="20sp"
-        android:paddingEnd="20sp"
-
-        android:layout_marginTop="20dp"
-        android:textColor="@color/text_color1"/>
-
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/imageSlider"
-        android:layout_below="@+id/espece_name"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_margin="16dp"
-        />
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="32dp">
+
+        <TextView
+            android:id="@+id/espece_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/ubuntubold"
+            android:text="@string/identification"
+            android:textAllCaps="false"
+            android:textSize="40sp"
+            android:textAlignment="center"
+            android:padding="2dp"
+            android:paddingStart="20sp"
+            android:paddingEnd="20sp"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/text_color1"/>
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/imageSlider"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_margin="16dp"/>
+
+        <TextView
+            android:id="@+id/services"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/ubuntubold"
+            android:textSize="30sp"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/black"
+            android:layout_marginStart="30dp"
+            android:text="@string/services"/>
+
+        <LinearLayout
+            android:id="@+id/sliders"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center_horizontal"/>
 
 
-    <TextView
-        android:id="@+id/services"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/imageSlider"
-        android:fontFamily="@font/ubuntumedium"
-        android:textSize="30sp"
-        android:layout_marginTop="10dp"
-        android:textColor="@color/black"
-        android:layout_marginStart="30dp"
-        android:text="@string/services"/>
+        <TextView
+            android:id="@+id/notes_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/ubuntubold"
+            android:textSize="26sp"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/black"
+            android:layout_marginStart="30dp"
+            android:text="@string/mes_notes_personelles"/>
 
-   <LinearLayout
-       android:id="@+id/sliders"
-       android:layout_below="@+id/services"
-       android:layout_centerHorizontal="true"
-       android:layout_width="wrap_content"
-       android:layout_height="wrap_content"
-       android:orientation="vertical" />
-    <TextView
-        android:id="@+id/notes_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/sliders"
-        android:fontFamily="@font/ubuntubold"
-        android:textSize="26sp"
-        android:layout_marginTop="10dp"
-        android:textColor="@color/black"
-        android:layout_marginStart="30dp"
-        android:text="@string/mes_notes_personelles"/>
-    <EditText
-        android:id="@+id/notes"
-        android:layout_below="@+id/notes_title"
-        android:background="@drawable/rounded_white_background"
-        android:layout_width="match_parent"
-        android:hint="@string/notes_placeholder"
-        android:layout_height="80dp"
-        android:layout_margin="10dp"/>
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/save_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/notes"
-        android:fontFamily="@font/ubuntumedium"
-        android:text="@string/sauvegarder"
-        android:textAllCaps="false"
-        android:textSize="28sp"
-        app:cornerRadius="50dp"
-        android:padding="20dp"
-        android:textColor="@color/black"
-        android:backgroundTint="@color/white"/>
-</RelativeLayout>
+        <EditText
+            android:id="@+id/notes"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:background="@drawable/rounded_white_background"
+            android:hint="@string/notes_placeholder"
+            android:layout_margin="10dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/save_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:fontFamily="@font/ubuntumedium"
+            android:text="@string/sauvegarder"
+            android:textAllCaps="false"
+            android:textSize="28sp"
+            app:cornerRadius="50dp"
+            android:padding="20dp"
+            android:textColor="@color/black"
+            android:backgroundTint="@color/white"/>
+
+    </LinearLayout>
+</ScrollView>

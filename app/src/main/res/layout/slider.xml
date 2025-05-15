@@ -1,34 +1,49 @@
-<?xml version="1.0" encoding="utf-8"?>
-
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-android:layout_width="match_parent"
-android:layout_height="wrap_content"
-android:orientation="vertical">
-
-<TextView
-    android:id="@+id/slider_label"
-    android:layout_width="wrap_content"
-    android:textColor="@color/black"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:fontFamily="@font/ubuntumedium"
-    android:textSize="22sp"
-    android:textStyle="bold" />
+    android:orientation="vertical"
+    android:padding="8dp">
 
-    <com.google.android.material.slider.Slider
-        android:id="@+id/slider"
-        android:layout_width="300dp"
+    <TextView
+        android:id="@+id/slider_label"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="@string/slider_service"
-        android:enabled="false"
-        android:layout_gravity="center"
-        android:value="0"
-        android:valueFrom="0"
-        android:valueTo="1.0"
-        app:thumbColor="@color/slider_color"
-        app:thumbRadius="15dp"
-        app:trackColor="@color/white"
-        app:trackHeight="8dp"
-       />
+        android:textColor="@color/black"
+        android:fontFamily="@font/ubuntumedium"
+        android:textSize="22sp"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <com.google.android.material.slider.Slider
+            android:id="@+id/slider"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:contentDescription="@string/slider_service"
+            android:enabled="false"
+            android:valueFrom="0"
+            android:valueTo="1.0"
+            app:thumbColor="@color/slider_colormid"
+            app:thumbRadius="15dp"
+            app:trackColor="@color/white"
+            app:trackHeight="8dp" />
+
+        <TextView
+            android:id="@+id/slider_value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_vertical|center"
+            android:fontFamily="@font/ubuntubold"
+            android:textColor="@color/white"
+            android:textSize="26sp"
+            android:minEms="3"
+            android:text="0.0" />
+    </LinearLayout>
 </LinearLayout>
