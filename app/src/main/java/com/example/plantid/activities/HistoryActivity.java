@@ -126,28 +126,39 @@ public class HistoryActivity extends AppCompatActivity {
             }
         }
 
-        Comparator<IdentificationWithServices> comparator = Comparator.comparing(item ->
-                item.services.isEmpty() ? "" : item.services.get(0).nomEspece, String::compareToIgnoreCase);
+        Comparator<IdentificationWithServices> comparator;
 
         switch (spinnerTri.getSelectedItemPosition()) {
-            case 1: // Z-A
-                comparator = comparator.reversed();
+            case 1: // Nom Z-A
+                comparator = Comparator.comparing(
+                        item -> item.services.isEmpty() ? "" : item.services.get(0).nomEspece,
+                        String.CASE_INSENSITIVE_ORDER.reversed()
+                );
                 break;
-            case 2: // Plus récent
-                comparator = comparator.thenComparing((a, b) ->
-                        b.identification.date.compareToIgnoreCase(a.identification.date));
+            case 2: // Date plus récent
+                comparator = Comparator.comparing(
+                        item -> item.identification.date,
+                        Comparator.nullsLast(Comparator.reverseOrder())
+                );
                 break;
-            case 3: // Plus ancien
-                comparator = comparator.thenComparing((a, b) ->
-                        a.identification.date.compareToIgnoreCase(b.identification.date));
+            case 3: // Date plus ancien
+                comparator = Comparator.comparing(
+                        item -> item.identification.date,
+                        Comparator.nullsLast(Comparator.naturalOrder())
+                );
                 break;
-            default: // A-Z
+            default: // Nom A-Z
+                comparator = Comparator.comparing(
+                        item -> item.services.isEmpty() ? "" : item.services.get(0).nomEspece,
+                        String.CASE_INSENSITIVE_ORDER
+                );
                 break;
         }
 
         Collections.sort(displayedItems, comparator);
         adapter.notifyDataSetChanged();
     }
+
 
     private void onDeleteClick(IdentificationWithServices item) {
         new AlertDialog.Builder(this)
