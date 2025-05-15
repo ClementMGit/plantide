@@ -51,10 +51,30 @@
         android:background="@drawable/rounded_white_background"
         app:iconifiedByDefault="false" />
 
-    <!-- RecyclerView -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewIdentifications"
+    <LinearLayout
+        android:layout_marginTop="10dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!-- RecyclerView avec poids pour prendre tout l'espace disponible -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewIdentifications"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginBottom="20dp" />
+
+        <!-- Bouton toujours visible en bas -->
+        <ImageButton
+            android:id="@+id/take_photo_from_history"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@null"
+            android:contentDescription="@string/desc_btn"
+            android:scaleType="fitCenter"
+            android:src="@drawable/add_photo" />
+    </LinearLayout>
+
 </LinearLayout>

@@ -9,6 +9,8 @@ import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
+
+import android.widget.ImageButton;
 import android.widget.Spinner;
 
 import androidx.appcompat.app.AlertDialog;
@@ -22,6 +24,7 @@ import com.example.plantid.db.AppDatabase;
 import com.example.plantid.db.dao.IdentificationDao;
 import com.example.plantid.db.entities.IdentificationWithServices;
 import com.example.plantid.utils.IdentificationAdapter;
+import com.example.plantid.utils.ImagePickerHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -48,6 +51,11 @@ public class HistoryActivity extends AppCompatActivity {
         searchView = findViewById(R.id.searchView);
         spinnerTri = findViewById(R.id.spinnerTri);
         searchView.setQueryHint("Rechercher");
+        ImageButton takePhotoButton = findViewById(R.id.take_photo_from_history);
+        ImagePickerHelper helper = new ImagePickerHelper(this);
+        takePhotoButton.setOnClickListener(v -> {
+            helper.pickImage(null);
+        });
 
         adapter = new IdentificationAdapter(displayedItems,
                 item -> {}, // onClick si besoin

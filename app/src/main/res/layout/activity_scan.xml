@@ -49,6 +49,7 @@
         android:textSize="20sp"
         android:layout_marginTop="10dp"
         android:padding="5dp"
+        android:textColor="@color/black"
         android:background="@drawable/rounded_white_background"
         android:text="@string/ajouter_jusqu_5_photos"/>
     <LinearLayout

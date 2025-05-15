@@ -14,6 +14,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -65,6 +66,18 @@ public class ScanActivity extends AppCompatActivity {
     private ImagePickerHelper pickerHelper;
     private MaterialCardView last_cv;
     private AppDatabase db;
+    private void showErrorToast(String message) {
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.custom_error_toast, findViewById(android.R.id.content), false);
+
+        TextView text = layout.findViewById(R.id.toast_text);
+        text.setText(message);
+
+        Toast toast = new Toast(getApplicationContext());
+        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setView(layout);
+        toast.show();
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -146,7 +159,7 @@ public class ScanActivity extends AppCompatActivity {
                 OkHttpClient client = new OkHttpClient.Builder()
                         .connectTimeout(10, TimeUnit.SECONDS)
                         .writeTimeout(40, TimeUnit.SECONDS)
-                        .readTimeout(20, TimeUnit.SECONDS)
+                        .readTimeout(40, TimeUnit.SECONDS)
                         .build();
 
                 MultipartBody.Builder multipartBuilder = new MultipartBody.Builder()
@@ -205,25 +218,35 @@ public class ScanActivity extends AppCompatActivity {
                             startActivity(intent);
                         } else {
                             runOnUiThread(() -> {
-                                Toast.makeText(this, "Espèce détectée : " + scientificName, Toast.LENGTH_LONG).show();
-                                Toast.makeText(this, "Aucune information sur cette espèce en base de données", Toast.LENGTH_LONG).show();
+                                showErrorToast("Erreur : Aucune information sur l'espèce \"" + scientificName + "\" trouvée en base de données");
                                 progressBar.setVisibility(View.GONE);
                             });
+
                         }
                     }
                 } else {
                     runOnUiThread(() -> {
-                        Toast.makeText(this, "Erreur HTTP : " + response.code(), Toast.LENGTH_LONG).show();
+                        int code = response.code();
+                        if (code == 404) {
+                            showErrorToast("Erreur 404 : Plante non trouvée");
+                        } else {
+                            showErrorToast("Erreur HTTP " + code);
+                        }
                         progressBar.setVisibility(View.GONE);
                     });
+
                 }
 
             } catch (Exception e) {
                 runOnUiThread(() -> {
-                    Toast.makeText(this, "Erreur : " + e.getMessage(), Toast.LENGTH_LONG).show();
-                    Log.e("Erreur", Objects.requireNonNull(e.getMessage()));
+                    if (e instanceof java.net.SocketTimeoutException) {
+                        showErrorToast("Erreur Timeout : le serveur met trop de temps à répondre");
+                    } else {
+                        showErrorToast("Erreur : " + e.getMessage());
+                    }
                     progressBar.setVisibility(View.GONE);
                 });
+
             }
         }).start();
     }
