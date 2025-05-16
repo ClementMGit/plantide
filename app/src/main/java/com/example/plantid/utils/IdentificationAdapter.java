@@ -28,26 +28,11 @@ import com.example.plantid.db.entities.IdentificationWithServices;
 import java.util.List;
 
 public class IdentificationAdapter extends RecyclerView.Adapter<IdentificationAdapter.ViewHolder> {
-
-    public interface OnClickListener {
-        void onClick(IdentificationWithServices item);
-    }
-
-    public interface OnDeleteClickListener {
-        void onDelete(IdentificationWithServices item);
-    }
-
     private final List<IdentificationWithServices> identifications;
-    private final OnClickListener onClick;
-    private final OnDeleteClickListener onDeleteClick;
     private final AppDatabase db;
 
-    public IdentificationAdapter(List<IdentificationWithServices> identifications,
-                                 OnClickListener onClick,
-                                 OnDeleteClickListener onDeleteClick, Activity activity) {
+    public IdentificationAdapter(List<IdentificationWithServices> identifications,  Activity activity) {
         this.identifications = identifications;
-        this.onClick = onClick;
-        this.onDeleteClick = onDeleteClick;
         this.db = AppDatabase.getDatabase(activity);
     }
 

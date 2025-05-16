@@ -104,7 +104,20 @@ public class ScanActivity extends AppCompatActivity {
 
         LinearLayout container = findViewById(R.id.take_btns);
         LayoutInflater inflater = LayoutInflater.from(this);
+        ImageButton retakePhotoBtn = findViewById(R.id.retake_photo_btn);
+        retakePhotoBtn.setOnClickListener(v -> {
+            pickerHelper.pickImage(uri -> {
+                if (uri != null) {
+                    uris[current_photo_index] = uri;
+                    big_image_view.setImageURI(uri);
 
+                    // Mettre à jour la petite vignette
+                    View itemVi = container.getChildAt(current_photo_index);
+                    ImageView thumbImageView = itemVi.findViewById(R.id.photo_image);
+                    thumbImageView.setImageURI(uri);
+                }
+            });
+        });
         for (int i = 0; i < 5; i++) {
             View itemView = inflater.inflate(R.layout.photo_btn, container, false);
             MaterialCardView cardView = itemView.findViewById(R.id.photo_cardview);
@@ -117,6 +130,7 @@ public class ScanActivity extends AppCompatActivity {
             }
             imageView.setOnClickListener(v -> {
                 int index = (int) v.getTag();
+                current_photo_index = index;
                 if(uris[index] == null) {
                     pickerHelper.pickImage(uri -> {
                         uris[index] = uri;
@@ -132,6 +146,7 @@ public class ScanActivity extends AppCompatActivity {
             });
             container.addView(itemView);
         }
+
 
         identify_btn.setOnClickListener(view -> {
             List<File> imageFiles = new ArrayList<>();

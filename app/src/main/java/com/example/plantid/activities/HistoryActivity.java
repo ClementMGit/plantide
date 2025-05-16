@@ -57,9 +57,7 @@ public class HistoryActivity extends AppCompatActivity {
             helper.pickImage(null);
         });
 
-        adapter = new IdentificationAdapter(displayedItems,
-                item -> {}, // onClick si besoin
-                this::onDeleteClick,this);
+        adapter = new IdentificationAdapter(displayedItems, this);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
@@ -157,20 +155,6 @@ public class HistoryActivity extends AppCompatActivity {
 
         Collections.sort(displayedItems, comparator);
         adapter.notifyDataSetChanged();
-    }
-
-
-    private void onDeleteClick(IdentificationWithServices item) {
-        new AlertDialog.Builder(this)
-                .setTitle("Supprimer")
-                .setMessage("Supprimer cette identification ?")
-                .setPositiveButton("Oui", (dialog, which) -> {
-                    // À compléter si tu veux supprimer depuis Room
-                    allItems.remove(item);
-                    filterAndSort();
-                })
-                .setNegativeButton("Non", null)
-                .show();
     }
 }
 
