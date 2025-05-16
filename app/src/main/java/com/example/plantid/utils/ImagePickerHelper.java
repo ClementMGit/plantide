@@ -47,25 +47,17 @@ public class ImagePickerHelper {
                             imageUri = data.getData();
                         }
 
-                        // Enregistrer l'image dans un répertoire accessible
-                        File savedFile = saveImageToPictures(imageUri);
-
-                        if (savedFile != null) {
-                            Uri savedUri = Uri.fromFile(savedFile);
-                            if (activity instanceof ScanActivity) {
-                                if (onImagePicked != null) {
-                                    onImagePicked.accept(savedUri); // Exécuter le callback
-                                    onImagePicked = null; // On reset après usage
-                                }
-                            } else {
-                                // Passer l'URI de l'image à ScanActivity
-                                Intent intent = new Intent(activity, ScanActivity.class);
-                                intent.putExtra("photoUri", savedUri.toString());
-                                activity.startActivity(intent);
+                        if (activity instanceof ScanActivity) {
+                            if (onImagePicked != null) {
+                                onImagePicked.accept(imageUri); // On utilise directement l'URI de la galerie ou de la photo
+                                onImagePicked = null;
                             }
                         } else {
-                            Log.e("ImagePicker", "Failed to save image.");
+                            Intent intent = new Intent(activity, ScanActivity.class);
+                            intent.putExtra("photoUri", imageUri.toString());
+                            activity.startActivity(intent);
                         }
+
                     }
                 });
     }
