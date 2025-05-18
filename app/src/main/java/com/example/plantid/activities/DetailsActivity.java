@@ -52,8 +52,9 @@ public class DetailsActivity extends Activity {
             notesEditText.setText(notes_extra);
         }
 
-        identificationId = getIntent().hasExtra("identificationId") ?
-                getIntent().getLongExtra("identificationId", -1) : null;
+        long idFromIntent = getIntent().getLongExtra("identificationId", -1);
+        identificationId = (idFromIntent != -1) ? idFromIntent : null;
+
         nomEspece = getIntent().getStringExtra("espece");
         espece.setText(nomEspece);
         String gbif_id = getIntent().getStringExtra("gbif");
@@ -72,21 +73,29 @@ public class DetailsActivity extends Activity {
         SlideShowAdapter adapter = new SlideShowAdapter(this, uris);
         viewPager.setAdapter(adapter);
 
-        // Correction : récupérer le gbifId si c'est une identification existante
         if (identificationId != null && identificationId != -1) {
-            Identification existing = db.identificationDao().getById(identificationId);
-            if (existing != null) {
-                gbif_id = existing.gbifId;
-            }
+            new Thread(() -> {
+                Identification existing = db.identificationDao().getById(identificationId);
+                if (existing != null) {
+                    String finalGbifId = existing.gbifId;
+                    runOnUiThread(() -> {
+                        MaterialButton gbifButton = findViewById(R.id.gbif_btn);
+                        gbifButton.setOnClickListener(v -> {
+                            String gbifUrl = "https://www.gbif.org/species/" + finalGbifId;
+                            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(gbifUrl));
+                            startActivity(browserIntent);
+                        });
+                    });
+                }
+            }).start();
+        }else{
+            MaterialButton gbifButton = findViewById(R.id.gbif_btn);
+            gbifButton.setOnClickListener(v -> {
+                String gbifUrl = "https://www.gbif.org/species/" + gbif_id;
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(gbifUrl));
+                startActivity(browserIntent);
+            });
         }
-
-        MaterialButton gbifButton = findViewById(R.id.gbif_btn);
-        String finalGbif_id = gbif_id; // variable final pour accéder dans la lambda
-        gbifButton.setOnClickListener(v -> {
-            String gbifUrl = "https://www.gbif.org/species/" + finalGbif_id;
-            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(gbifUrl));
-            startActivity(browserIntent);
-        });
 
         new Thread(() -> {
             services = db.proposeServiceDao().getByEspece(nomEspece);
@@ -139,7 +148,7 @@ public class DetailsActivity extends Activity {
                     identification.date = getCurrentDate();
                     identification.notesPersonnelles = notes;
                     identification.imageUris = uris;
-                    identification.gbifId = finalGbif_id;
+                    identification.gbifId = gbif_id;
                     long newId = db.identificationDao().insert(identification);
 
                     for (ProposeService service : services) {
