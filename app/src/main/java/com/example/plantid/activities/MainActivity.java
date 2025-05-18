@@ -33,6 +33,19 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(MainActivity.this, HistoryActivity.class);
             startActivity(intent);
         });
+        // Chemin complet vers la base SQLite dans le stockage interne de l’app
+        File dbFile = getApplicationContext().getDatabasePath("app_db");
+
+        if (!dbFile.exists()) {
+            // La base n'existe pas => on la crée depuis le CSV
+            new Thread(() -> {
+                DatabaseBuilder.buildDatabaseFromCsv(getApplicationContext());
+            }).start();
+        } else {
+            // La base existe, on ne fait rien
+            Log.i("MainActivity", "Base de données déjà présente, pas d'initialisation.");
+        }
+
 
 //        new Thread(() -> {
 //            AppDatabase db = AppDatabase.getDatabase(MainActivity.this);

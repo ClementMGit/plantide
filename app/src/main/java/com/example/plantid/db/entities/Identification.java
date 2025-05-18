@@ -19,6 +19,7 @@ public class Identification {
 
     public String date;
     public String notesPersonnelles;
+    public String gbifId;
 
     @TypeConverters(UriListConverter.class)
     public List<Uri> imageUris;

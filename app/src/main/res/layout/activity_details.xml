@@ -27,11 +27,35 @@
             android:layout_marginTop="20dp"
             android:textColor="@color/text_color1"/>
 
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/imageSlider"
+        <!-- Encapsulation dans un FrameLayout pour superposition -->
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:layout_margin="16dp"/>
+            android:layout_margin="16dp">
+
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/imageSlider"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <!-- Bouton superposé en bas à droite -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/gbif_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/en_savoir_plus"
+                android:textAllCaps="false"
+                android:textSize="14sp"
+                android:fontFamily="@font/ubuntumedium"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:backgroundTint="@color/white"
+                app:cornerRadius="10dp"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="8dp"
+                android:textColor="@color/black"
+                />
+        </FrameLayout>
 
         <TextView
             android:id="@+id/services"
@@ -50,7 +74,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_gravity="center_horizontal"/>
-
 
         <TextView
             android:id="@+id/notes_title"
@@ -84,6 +107,5 @@
             android:padding="20dp"
             android:textColor="@color/black"
             android:backgroundTint="@color/white"/>
-
     </LinearLayout>
 </ScrollView>

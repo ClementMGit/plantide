@@ -214,6 +214,8 @@ public class ScanActivity extends AppCompatActivity {
                         JsonObject firstResult = results.get(0).getAsJsonObject();
                         JsonObject species = firstResult.getAsJsonObject("species");
                         String scientificName = species.get("scientificNameWithoutAuthor").getAsString();
+                        JsonObject gbifObject = firstResult.getAsJsonObject("gbif");
+                        String gbifId = gbifObject != null ? gbifObject.get("id").getAsString() : null;
 
                         EspeceRepository repo = new EspeceRepository(this);
                         Espece proche = repo.getClosestEspece(scientificName);
@@ -223,6 +225,7 @@ public class ScanActivity extends AppCompatActivity {
                             });
                             Intent intent = new Intent(this, DetailsActivity.class);
                             intent.putExtra("espece", proche.getNom());
+                            intent.putExtra("gbif", gbifId);
                             ArrayList<String> urisAsStringList = new ArrayList<>();
                             for (Uri uri : uris) {
                                 if (uri != null) {

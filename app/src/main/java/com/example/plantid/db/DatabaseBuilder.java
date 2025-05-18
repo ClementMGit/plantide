@@ -17,7 +17,7 @@ public class DatabaseBuilder {
 
     public static void buildDatabaseFromCsv(Context context) {
         AppDatabase myDatabase = AppDatabase.getDatabase(context);
-
+        new Thread(() -> {
         try {
             InputStream is = context.getAssets().open("services.csv");
             BufferedReader reader = new BufferedReader(new InputStreamReader(is));
@@ -65,6 +65,6 @@ public class DatabaseBuilder {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-}
+    }).start();
+}}
 
