@@ -57,16 +57,35 @@
                 />
         </FrameLayout>
 
-        <TextView
-            android:id="@+id/services"
+        <!-- Ligne titre "Services" + bouton ? -->
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/ubuntubold"
-            android:textSize="30sp"
             android:layout_marginTop="10dp"
-            android:textColor="@color/black"
-            android:layout_marginStart="30dp"
-            android:text="@string/services"/>
+            android:layout_marginStart="10dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/services"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/ubuntubold"
+                android:textSize="30sp"
+                android:textColor="@color/black"
+                android:text="@string/services"/>
+
+            <ImageButton
+                android:id="@+id/help_btn"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/help"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_help"
+                />
+        </LinearLayout>
+
 
         <LinearLayout
             android:id="@+id/sliders"

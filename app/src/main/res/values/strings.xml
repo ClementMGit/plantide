@@ -19,4 +19,10 @@
     <string name="_15_f_vrier_2023">15 février 2023</string>
     <string name="retake_button">Retake button</string>
     <string name="en_savoir_plus">En savoir plus</string>
+    <string name="confiance_info">
+    L\'indice de confiance est représenté par la couleur du slider :\nrouge = mauvais &lt; 30% \nbleu =  30% &lt; moyen &lt; 70% \nvert = très bon &gt; 70%\nCliquez sur la valeur pour avoir l\'indice de confiance exacte
+    </string>
+
+    <string name="help">Aide</string>
+
 </resources>

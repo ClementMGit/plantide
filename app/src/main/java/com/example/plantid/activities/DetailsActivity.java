@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,6 +44,15 @@ public class DetailsActivity extends Activity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
+        ImageButton helpBtn = findViewById(R.id.help_btn);
+        helpBtn.setOnClickListener(v -> {
+            new android.app.AlertDialog.Builder(DetailsActivity.this)
+                    .setTitle("Indice de confiance")
+                    .setMessage(getString(R.string.confiance_info))
+                    .setCancelable(true)
+                    .setPositiveButton("OK", null)
+                    .show();
+        });
 
         TextView espece = findViewById(R.id.espece_name);
         saveButton = findViewById(R.id.save_btn);
@@ -115,20 +125,29 @@ public class DetailsActivity extends Activity {
                         serviceTxt = "Capacité à retenir l'eau dans le sol";
                     }
                     label.setText(serviceTxt);
+                    float confiance = ps.getConfiance();
+
                     float qualite = ps.getQualite();
                     slider.setValue(qualite);
 
                     int couleur;
-                    if (qualite <= 0.25) {
+
+                    if (confiance <= 30f) {
                         couleur = getResources().getColor(R.color.slider_colorlow);
-                    } else if (qualite >= 0.75) {
+                    } else if (confiance >= 70f) {
                         couleur = getResources().getColor(R.color.slider_colormhigh);
                     } else {
                         couleur = getResources().getColor(R.color.slider_colormid);
                     }
 
+                    valueText.setOnClickListener(v -> {
+                        Toast.makeText(getApplicationContext(),
+                                "Taux de confiance : " + String.format(Locale.getDefault(), "%.2f", confiance)+"%",
+                                Toast.LENGTH_SHORT).show();
+                    });
+
                     slider.setThumbTintList(ColorStateList.valueOf(couleur));
-                    valueText.setText(String.format(Locale.getDefault(), "%.2f", qualite));
+                    valueText.setText(String.format(Locale.getDefault(), "%.2f",qualite ));
                     container.addView(itemView);
                 }
             });
