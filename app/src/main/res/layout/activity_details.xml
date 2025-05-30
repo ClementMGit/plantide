@@ -11,6 +11,11 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingBottom="32dp">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/liane"
+            android:scaleType="fitXY"/>
 
         <TextView
             android:id="@+id/espece_name"
@@ -25,7 +30,12 @@
             android:paddingStart="20sp"
             android:paddingEnd="20sp"
             android:layout_marginTop="20dp"
-            android:textColor="@color/text_color1"/>
+            android:textColor="@color/black"/>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/liane"
+            android:scaleType="fitXY"/>
 
         <!-- Encapsulation dans un FrameLayout pour superposition -->
         <FrameLayout

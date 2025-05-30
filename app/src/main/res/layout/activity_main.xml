@@ -10,7 +10,7 @@
     android:layout_width="200dp"
     android:scaleType="fitCenter"
     android:layout_height="200dp"
-    android:layout_marginTop="100dp"
+    android:layout_marginTop="120dp"
     android:layout_centerHorizontal="true"
     android:contentDescription="@string/logo_application"
     android:src="@drawable/logo_plantide"
